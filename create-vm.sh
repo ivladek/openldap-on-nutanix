@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# v01.00.00 21.08.2022
+# v01.00.01 22.08.2022
 #
 # Script to generate script :)
 # for fully unattended deployment of Ubuntu VM on Nutanix PC, with OpenLDAP inside
@@ -21,7 +21,7 @@ then
   # check mkpasswd presense
   dpkg -l | grep whois > /dev/null
   if [[ $? != 0 ]]
-  then
+  then # hope you on Ubuntu
     echo -e "mkpasswd is absent and needed to be installed - please enter password for sudo"
     sudo apt -y install whois
   fi
@@ -104,6 +104,8 @@ do
   echo -n "${!b64}" > "$DIRtemp/${!f}_b64"
 done
 
+# need to generate a separate script without any variables
+# because sed does not work as expected from bash script
 DATAtype="user"
 SCRIPTfile="$DIRtemp/${DATAtype}-data_process.sh"
 DATAfile="$DIRoutput/${DATAtype}-data"
@@ -146,6 +148,7 @@ done
 "$SCRIPTfile"
 
 
+# the final stage generation of script for RestAPI call to create and customize VM
 echo -e "\ncreate script file to process request to Nutanix Prism Central"
 SCRIPTfile="$DIRoutput/pc-vm-create.sh"
 PClogin=$(echo "$PCuser:$PCpasswd" | tr -d '[:space:]' | openssl base64 | tr -d '[:space:]')
@@ -155,13 +158,20 @@ PCheader_auth="'Authorization: Basic $PClogin'"
 PCcookie="pc-data.cookie"
 PCreq_vmcreate="'$(cat $DIRoutput/vm-data.json)'"
 
-echo -n "
+echo -n "#!/bin/bash
+dpkg -l | grep curl > /dev/null
+if [[ $? != 0 ]]
+then # hope you on Ubuntu
+  echo -e \"curl is absent and needed to be installed - please enter password for sudo\"
+  sudo apt -y install curl
+fi
 curl -c $PCcookie -X 'GET' -k $PCurl_login -H 'Content-Type: application/json' -H $PCheader_auth
 curl -b $PCcookie -X 'POST' -k $PCurl_vmcreate -H 'accept: application/json' -H 'Content-Type: application/json' -d $PCreq_vmcreate
 " > $SCRIPTfile
 
-echo -e "\n\n script file created - $SCRIPTfile"
-echo "------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------"
 cat $SCRIPTfile
-echo "------------------------------------------------------------"
-echo -e "\ndone. bye"
+echo "------------------------------------------------------------------------------------------"
+echo "just copy this script file to linux vm with access to Nutanix Prism Central and Element"
+echo "  script file is \"$SCRIPTfile\""
+echo "done. bye"
