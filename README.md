@@ -4,8 +4,8 @@ This script for deployment of VM with Ubuntu, using Nutanix RestAPI, and install
 
 This project contains a lot of files. Five of them are important:
 - create-vm.sh - main script
-- config/script.config - internal config data
-- config/sample.config - user input, create user.config file for your own data
+- config/script.cfg - internal config data
+- config/sample.cfg - user input, create user.cfg file for your own data
 - template/user-data_template - template user-data(.yaml) file for cloud-init
 - template/vm-data_template - template vm-data.json file for RestAPI call to Nutanix API
 
