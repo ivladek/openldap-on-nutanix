@@ -6,8 +6,8 @@ echo -e "\t{{VMtz}}: "'Asia/Almaty'
 sed -i '' 's|{{VMtz}}|Asia/Almaty|g' output/user-data
 echo -e "\t{{VMuser}}: "'ldap-admin'
 sed -i '' 's|{{VMuser}}|ldap-admin|g' output/user-data
-echo -e "\t{{hashVMpasswd}}: "'$6$rounds=4096$zaeCuz10rQpHCy5y$RShIrb6dYegDEW5pTnXFc33PcznuktqRQbVAs9YFz44QirNCBL36u79/Qr0VSfD39TWbIPDPjZTydpKeM4had0'
-sed -i '' 's|{{hashVMpasswd}}|$6$rounds=4096$zaeCuz10rQpHCy5y$RShIrb6dYegDEW5pTnXFc33PcznuktqRQbVAs9YFz44QirNCBL36u79/Qr0VSfD39TWbIPDPjZTydpKeM4had0|g' output/user-data
+echo -e "\t{{hashVMpasswd}}: "'$6$rounds=4096$DsTcauU5YkooSyOp$aqwup6MXzpmHBhZfqEE5T0tPp0zTq/KUhFM9K6Zzgbb0P/EeXTWyo4LoERMZE6UBp0HfHx/YKaHQ.gj8v1yF40'
+sed -i '' 's|{{hashVMpasswd}}|$6$rounds=4096$DsTcauU5YkooSyOp$aqwup6MXzpmHBhZfqEE5T0tPp0zTq/KUhFM9K6Zzgbb0P/EeXTWyo4LoERMZE6UBp0HfHx/YKaHQ.gj8v1yF40|g' output/user-data
 echo -e "\t{{LDAPcert}}: "'C=KZ, L=Almaty, O=Ivladek qPort, OU=LDAP Server, CN=ldap.ivladek.com'
 sed -i '' 's|{{LDAPcert}}|C=KZ, L=Almaty, O=Ivladek qPort, OU=LDAP Server, CN=ldap.ivladek.com|g' output/user-data
 echo -e "\t{{LDAPadminDN}}: "'CN=admin,DC=ivladek,DC=com'
