@@ -6,7 +6,7 @@ timezone: Asia/Almaty
 
 users:
   - name: ldap-admin
-    hashed_passwd: $6$rounds=4096$sQZ38iBKkvqyouOc$k/IDmJWYFHJT57dwelzI8f2byunCaeiiVJzctj.nyEyhOU.7.Dv38yMzidKDONmXlwXvKkOqy3X1bjWcMrH/Q/
+    hashed_passwd: $6$rounds=4096$1DTC9jx7TcyVA.Fe$SPRQ70kk.2mdqkGKgGwYfcx5.0yWKZBFr2d9ZzeQyTWiYUY.EIGrl.VwxLamByldA9pQFMk5K8IDQusJqDmYe/
     groups: sudo
     shell: /bin/bash
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
