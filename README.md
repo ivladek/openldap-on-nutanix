@@ -34,14 +34,14 @@ Directories in this repo:
 - **templates** - for user-data and vm-data templates
 - **output** - all intermediate files
 
-The script lines:
-[13–45] - loading the user data from file like above
-[47–96] - preparation files to include into user-data
-[98–105] - encoding prepared files with base64
-[107–129] - generation user-data from template and encode its content with base64
-[131–148] - generation user-data from template and encode its content with base64
-[161–170] - generation the target script file, which makes call to Nutanix API to create VM and deploy software inside it
-[172–177] - just say goodbye
+The script lines:\
+[13–45] - loading the user data from file like above\
+[47–96] - preparation files to include into user-data\
+[98–105] - encoding prepared files with base64\
+[107–129] - generation user-data from template and encode its content with base64\
+[131–148] - generation vm-data from template and encode its content with base64\
+[161–170] - generation the target script file, which makes call to Nutanix API to create VM and deploy software inside it\
+[172–177] - just say goodbye\
 
 
 The result is **output\pc-vm-create.sh**
