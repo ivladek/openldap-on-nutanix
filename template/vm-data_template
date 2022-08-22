@@ -1,0 +1,73 @@
+{
+    "spec": {
+        "name": "{{VMname}}",
+        "resources": {
+            "power_state":"ON",
+            "boot_config": {
+                "boot_type": "UEFI"
+            },
+            "num_sockets": {{VMcores}},
+            "num_vcpus_per_socket": 1,
+            "memory_size_mib": {{VMram}},
+            "memory_overcommit_enabled": false,
+            "disk_list": [
+                {
+                    "device_properties": {
+                        "device_type": "DISK",
+                        "disk_address": {
+                            "device_index": 0,
+                            "adapter_type": "SCSI"
+                        }
+                    },
+                    "data_source_reference": {
+                        "kind": "image",
+                        "uuid": "{{VMimage}}"
+                    },
+                    "disk_size_mib": {{VMdisk}}
+                },
+                {
+                    "device_properties": {
+                        "device_type": "CDROM",
+                        "disk_address": {
+                            "device_index": 0,
+                            "adapter_type": "SATA"
+                        }
+                    }
+                }
+            ],
+            "nic_list":[
+                {
+                    "nic_type": "NORMAL_NIC",
+                    "is_connected": true,
+                    "ip_endpoint_list": [
+                        {
+                            "type": "ASSIGNED",
+                            "ip": "{{VMip}}"
+                        }
+                    ],
+                    "subnet_reference": {
+                        "kind": "subnet",
+                        "name": "{{VMnet}}",
+                        "uuid": "{{VMnetuuid}}"
+                    }
+                }
+            ],
+            "guest_customization": {
+                "cloud_init": {
+                    "user_data": "{{USERdata_b64}}"
+                },
+                "is_overridable": false
+            }           
+        },
+        "cluster_reference": {
+            "kind": "cluster",
+            "name": "{{CLUSTERname}}",
+            "uuid": "{{CLUSTERuuid}}"
+        }
+    },
+    "api_version": "3.1.0",
+    "metadata": {
+        "kind": "vm"
+    }
+}
+ 
