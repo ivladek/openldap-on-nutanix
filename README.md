@@ -10,13 +10,16 @@ This project contains a lot of files. Five of them are important:
 - **template/vm-data_template** - template vm-data.json file for RestAPI call to Nutanix API
 
 Some of input data should be collected from Nutanix Prism Central (PC) and Prism Element (PE):
-- cluster name and uuid: ssh to Nutanix PC VIP and use ```console
+- cluster name and uuid: ssh to Nutanix PC VIP and use 
+```console
 ncli multicluster get-cluster-state
 ```
-- image uuid - ssh to Nutanix PE VIP and use ```console
+- image uuid - ssh to Nutanix PE VIP and use 
+```console
 acli image.list
 ```
-- network name and uuid - ssh to Nutanix PE VIP and use ```console
+- network name and uuid - ssh to Nutanix PE VIP and use 
+```console
 acli image.list
 ```
 
