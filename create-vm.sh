@@ -169,7 +169,6 @@ curl -c $PCcookie -X 'GET' -k $PCurl_login -H 'Content-Type: application/json' -
 curl -b $PCcookie -X 'POST' -k $PCurl_vmcreate -H 'accept: application/json' -H 'Content-Type: application/json' -d $PCreq_vmcreate
 " > $SCRIPTfile
 
-echo -e "\n\n script file created - $SCRIPTfile"
 echo "------------------------------------------------------------------------------------------"
 cat $SCRIPTfile
 echo "------------------------------------------------------------------------------------------"
