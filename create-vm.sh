@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# v01.00.01 22.08.2022
+# v01.01.00 22.08.2022
 #
 # Script to generate script :)
 # for fully unattended deployment of Ubuntu VM on Nutanix PC, with OpenLDAP inside
@@ -11,9 +11,9 @@
 
 
 echo -e "init script data"
-. config/script.config
+. config/script.cfg
 echo -e "init user data"
-[[ -f config/sample.config ]] && . config/sample.config || config/user.config
+[[ -f config/sample.cfg ]] && . config/sample.cfg || config/user.cfg
 
 if [[ "$OSTYPE" == *"linux"* ]];
 then
@@ -35,13 +35,13 @@ else # macos does not have mkpasswd and sed has different syntax
     echo -e "passlib for python3 is absent and needed to be installed"
     pip3 install passlib
   fi
-  echo "create $DIRtemp/mkpasswd.py"
+  echo "create $DIRoutput/mkpasswd.py"
   echo '#!/usr/bin/env python3
 import sys
 from passlib.hash import sha512_crypt
-print(sha512_crypt.hash(sys.argv[1], rounds=4096))' > $DIRtemp/mkpasswd.py
-  chmod +x $DIRtemp/mkpasswd.py
-  hashVMpasswd=$($DIRtemp/mkpasswd.py "$VMpasswd")
+print(sha512_crypt.hash(sys.argv[1], rounds=4096))' > $DIRoutput/mkpasswd.py
+  chmod +x $DIRoutput/mkpasswd.py
+  hashVMpasswd=$($DIRoutput/mkpasswd.py "$VMpasswd")
 fi
 
 echo -e "create file to init LDAP - create OU for users and groups"
@@ -98,16 +98,16 @@ slapd slapd/no_configuration boolean false
 echo -e "encode files to base64"
 for f in ${file2b64[@]}
 do
-  echo -e "\t$DIRoutput/${!f} >> $DIRtemp/${!f}_b64"
+  echo -e "\t$DIRoutput/${!f} >> $DIRoutput/${!f}_b64"
   b64="${f}_b64"
   export ${b64}=$(openssl base64 -in "$DIRoutput/${!f}" | tr -d '[:space:]')
-  echo -n "${!b64}" > "$DIRtemp/${!f}_b64"
+  echo -n "${!b64}" > "$DIRoutput/${!f}_b64"
 done
 
 # need to generate a separate script without any variables
 # because sed does not work as expected from bash script
 DATAtype="user"
-SCRIPTfile="$DIRtemp/${DATAtype}-data_process.sh"
+SCRIPTfile="$DIRoutput/${DATAtype}-data_process.sh"
 DATAfile="$DIRoutput/${DATAtype}-data"
 cp "$DIRtemplate/${DATAtype}-data_template" "$DATAfile"
 echo -e "#!/bin/bash" > "$SCRIPTfile"
@@ -129,7 +129,7 @@ done
 USERdata_b64=$(openssl base64 -in "$DATAfile" | tr -d '[:space:]')
 
 DATAtype="vm"
-SCRIPTfile="$DIRtemp/${DATAtype}-data_process.sh"
+SCRIPTfile="$DIRoutput/${DATAtype}-data_process.sh"
 DATAfile="$DIRoutput/${DATAtype}-data.json"
 cp "$DIRtemplate/${DATAtype}-data_template" "$DATAfile"
 echo -e "#!/bin/bash" > "$SCRIPTfile"
