@@ -44,4 +44,4 @@ The script lines:\
 [172–177] - just say goodbye
 
 
-The result is **output\pc-vm-create.sh**
+The result is **output/pc-vm-create.sh**
