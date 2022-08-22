@@ -1,0 +1,93 @@
+#cloud-config
+
+fqdn: {{VMfqdn}}
+manage_etc_hosts: true
+timezone: {{VMtz}}
+
+users:
+  - name: {{VMuser}}
+    hashed_passwd: {{hashVMpasswd}}
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    lock-passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+write_files:
+  - path: /home/{{VMuser}}/{{fileLDAPanswers1}}
+    owner: {{VMuser}}:{{VMuser}}
+    permissions: '0640'
+    encoding: b64
+    content: {{fileLDAPanswers1_b64}}
+    defer: true
+  - path: /home/{{VMuser}}/{{fileLDAPanswers2}}
+    owner: {{VMuser}}:{{VMuser}}
+    permissions: '0640'
+    encoding: b64
+    content: {{fileLDAPanswers2_b64}}
+    defer: true
+  - path: /home/{{VMuser}}/{{fileLDAProot}}
+    owner: {{VMuser}}:{{VMuser}}
+    permissions: '0640'
+    encoding: b64
+    content: {{fileLDAProot_b64}}
+    defer: true
+  - path: /home/{{VMuser}}/{{fileLDAPtls}}
+    owner: {{VMuser}}:{{VMuser}}
+    permissions: '0640'
+    encoding: b64
+    content: {{fileLDAPtls_b64}}
+    defer: true
+  - path: /home/{{VMuser}}/{{fileLDAPinit}}
+    owner: {{VMuser}}:{{VMuser}}
+    permissions: '0640'
+    encoding: b64
+    content: {{fileLDAPinit_b64}}
+    defer: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - debconf-utils
+  - ldap-utils
+  - apache2
+  - php
+  - php-cgi
+  - libapache2-mod-php
+  - php-mbstring
+  - php-common
+  - php-pear
+  - ldap-account-manager
+runcmd:
+# set hostname to fqdn
+  - hostnamectl set-hostname {{VMfqdn}}
+# open firewall ports - ssh, ldap(s), http(s)
+  - ufw allow 22/tcp
+  - ufw allow 389/tcp
+  - ufw allow 686/tcp
+  - ufw allow 80/tcp
+  - ufw allow 443/tcp
+  - ufw --force enable
+# allow php cgi for apache
+  - a2enconf php*-cgi
+  - systemctl reload apache2
+# slapd silent installation
+  - cat /home/{{VMuser}}/{{fileLDAPanswers1}} | debconf-set-selections
+  - DEBIAN_FRONTEND=noninteractive apt -y install slapd
+  - cat /home/{{VMuser}}/{{fileLDAPanswers2}} | debconf-set-selections
+  - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure slapd
+# generate self signed certificate for ldaps
+  - openssl req -newkey rsa:4096 -x509 -nodes -out /etc/ldap/sasl2/{{VMfqdn}}.crt -keyout /etc/ldap/sasl2/{{VMfqdn}}.key -days 5000 -subj "{{LDAPcert}}"
+  - chown openldap:openldap /etc/ldap/sasl2/{{VMfqdn}}.*
+# clear all white space from psaaword file
+  - echo -n "$(cat /home/{{VMuser}}/{{fileLDAProot}} | tr -d '[:space:]')" > /home/{{VMuser}}/{{fileLDAProot}}
+# create base OU
+  - ldapadd -x -D {{LDAPadminDN}} -y /home/{{VMuser}}/{{fileLDAProot}} -f /home/{{VMuser}}/{{fileLDAPinit}}
+# enable ldaps
+  - ldapmodify -Y EXTERNAL -H ldapi:/// -f /home/{{VMuser}}/{{fileLDAPtls}}
+  - sed -i "s|^SLAPD_SERVICES.*$|SLAPD_SERVICES=\"ldap:/// ldaps:/// ldapi:///\"|" /etc/default/slapd
+  - systemctl restart slapd

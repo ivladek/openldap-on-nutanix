@@ -1,0 +1,10 @@
+
+DN: OU=users,DC=ivladek,DC=com
+objectClass: organizationalUnit
+objectClass: top
+OU: users
+
+DN: OU=groups,DC=ivladek,DC=com
+objectClass: organizationalUnit
+objectClass: top
+OU: groups

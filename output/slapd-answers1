@@ -1,0 +1,3 @@
+
+slapd slapd/root_password password ivladek2022-ROOT
+slapd slapd/root_password_again password ivladek2022-ROOT
